@@ -8,7 +8,11 @@ musicQuestion = 'reproduce'
 musicAnswer = 'Reproduciendo '
 timeQuestion = 'hora'
 timeAnswer = 'Son las '
+exitQuestion = 'Salir'
+exitAnswer = 'Saliendo'
+unknownQuestion = 'No te he entendido'
 
+flag = 1
 
 listener = sr.Recognizer()
 
@@ -24,22 +28,25 @@ def talk(text):
 
 
 def listen():
+    flag = 1
     try:
         with sr.Microphone() as source:
             print('Escuchando...')
             voice = listener.listen(source)
-            rec = listener.recognize_google(voice)
-            rec.lower()
+            rec = listener.recognize_google(voice, language='es-ES')
+            rec = rec.lower()
+
             if name in rec:
                 rec = rec.replace(name, '')
-                print(rec)
+                flag = run(rec)
+            else:
+                talk(unknownQuestion + rec)
     except:
         pass
-    return rec
+    return flag
 
 
-def run():
-    rec = listen()
+def run(rec):
     if musicQuestion in rec:
         music = rec.replace(musicQuestion, '')
         talk(musicAnswer + music)
@@ -49,5 +56,15 @@ def run():
         hora = datetime.datetime.now().strftime('%H:%M')
         talk(timeAnswer + hora)
 
+    elif exitQuestion in rec:
+        flag = 0
+        talk(exitAnswer)
 
-run()
+    else:
+        talk(unknownQuestion + rec)
+
+    return flag
+
+
+while flag:
+    flag = listen()
