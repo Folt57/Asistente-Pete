@@ -19,7 +19,9 @@ listener = sr.Recognizer()
 engine = pyttsx3.init()
 
 voices = engine.getProperty('voices')
-engine.setProperty('voice', voices[0].id)
+engine.setProperty('voice', 0)
+engine. setProperty('rate', 178)
+engine.setProperty('volume', 0.7)
 
 
 def talk(text):
